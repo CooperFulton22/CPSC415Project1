@@ -19,6 +19,12 @@ class CfultonVacuumAgent(VacuumAgent):
     def __init__(self):
         super().__init__()
         self._bump = False
+        coordsVisited = {};
+        #x and y both start at 0, (0,0) being the starting point
+        x = 0;
+        y = 0;
+        coordStart = (x, y);
+        coordsVisted.add(coordStart);
     def program(self, percept):
         if (self._status == 'Dirty') {
             return 'Suck';
