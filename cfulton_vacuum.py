@@ -20,7 +20,15 @@ class CfultonVacuumAgent(VacuumAgent):
         super().__init__()
         self._bump = False
     def program(self, percept):
-        return 'NoOp';
+        if (self._status == 'Dirty') {
+            return 'Suck';
+        }
+        else {
+            if (self._bump == 'Bump'){
+                return 'Up';
+            }
+        }
+            
 
 
 
