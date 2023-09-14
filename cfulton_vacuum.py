@@ -19,19 +19,30 @@ class CfultonVacuumAgent(VacuumAgent):
     def __init__(self):
         super().__init__()
         self._bump = False
-        coordsVisited = []
+        #coordsVisited = []
         #x and y both start at 0, (0,0) being the starting point
-        x = 0
-        y = 0
-        coordStart = (x, y)
-        coordsVisited.append(coordStart)
+        #x = 0
+        #y = 0
+        #coordStart = (x, y)
+        #coordsVisited.append(coordStart)
+        self.lastAction = ""
     def program(self, percept):
         if (percept[0] == 'Dirty'):
             return 'Suck'
         else:
-            x = x + 1
-            coordsVisited.add(x, y)
-            return 'Right'
+            #x = x + 1
+            #coordsVisited.add(x, y)
+            if percept[1] == 'None' and self.lastAction == "" :
+                self.lastAction = "Up"
+                return 'Up'
+            elif percept[1] == 'None' and self.lastAction == "Up":
+                return 'Up'
+            elif percept[1] == 'Bump':
+                self.lastAction = "Right"
+                return 'Right'
+            elif percept[1] == 'None' and self.lastAction == "Right":
+                self.lastAction = "Right"
+                return 'Right'
             
 class VacuumEnvironment(XYEnvironment):
 
