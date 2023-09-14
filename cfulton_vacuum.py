@@ -19,12 +19,12 @@ class CfultonVacuumAgent(VacuumAgent):
     def __init__(self):
         super().__init__()
         self._bump = False
-        #coordsVisited = []
+        self.coordsVisited = []
         #x and y both start at 0, (0,0) being the starting point
-        #x = 0
-        #y = 0
-        #coordStart = (x, y)
-        #coordsVisited.append(coordStart)
+        self.x = 0
+        self.y = 0
+        self.coordAt = (self.x, self.y)
+        self.coordsVisited.append(self.coordAt)
         self.lastAction = ""
     def program(self, percept):
         if (percept[0] == 'Dirty'):
@@ -34,15 +34,58 @@ class CfultonVacuumAgent(VacuumAgent):
             #coordsVisited.add(x, y)
             if percept[1] == 'None' and self.lastAction == "" :
                 self.lastAction = "Up"
+                self.y = self.y + 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
                 return 'Up'
             elif percept[1] == 'None' and self.lastAction == "Up":
+                self.lastAction = "Up"
+                self.y = self.y + 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
                 return 'Up'
-            elif percept[1] == 'Bump':
+            elif percept[1] == 'Bump' and self.lastAction == "Up":
                 self.lastAction = "Right"
+                self.x = self.x + 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
                 return 'Right'
             elif percept[1] == 'None' and self.lastAction == "Right":
                 self.lastAction = "Right"
+                self.x = self.x + 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
                 return 'Right'
+            elif percept[1] == 'Bump' and self.lastAction == "Right":
+                self.lastAction = "Down"
+                self.y = self.y - 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
+                return 'Down'
+            elif percept[1] == 'None' and self.lastAction == "Down":
+                self.lastAction = "Down"
+                self.y = self.y - 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
+                return 'Down'
+            elif percept[1] == 'Bump' and self.lastAction == "Down":
+                self.lastAction = "Left"
+                self.x = self.x - 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
+                return 'Left'
+            elif percept[1] == 'None' and self.lastAction == "Left":
+                self.lastAction = "Left"
+                self.x = self.x - 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
+                return 'Left'
+            elif percept[1] == 'Bump' and self.lastAction == "Left":
+                self.lastAction = "Up"
+                self.y = self.y + 1
+                self.coordAt = (self.x, self.y)
+                self.coordsVisited.append(self.coordAt)
+                return 'Up'
             
 class VacuumEnvironment(XYEnvironment):
 
