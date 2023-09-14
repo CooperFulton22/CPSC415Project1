@@ -26,104 +26,240 @@ class CfultonVacuumAgent(VacuumAgent):
         self.coordAt = (self.x, self.y)
         self.coordsVisited.append(self.coordAt)
         self.lastAction = ""
+        self.noOpCount = 0
+        self.noOpAction = False
+        self.actionAfterNoOpCycleEnds = ""
+        self.spinCycle = 0
     def program(self, percept):
         if (percept[0] == 'Dirty'):
             return 'Suck'
         else:
-            if percept[1] == 'None' and self.lastAction == "" :
+            if self.noOpCount == 5 and self.noOpAction == True and (self.actionAfterNoOpCycleEnds == "" or self.actionAfterNoOpCycleEnds == "Left"):
+                self.spinCycle = self.spinCycle + 1
+                if self.spinCycle % 4 == 0 and self.spinCycle > 0:
+                    self.spinCycle = self.spinCycle - 4
+                    return 'Up'
+                else:
+                    self.noOpCount = 0
+                    self.noOpAction = False
+                    self.lastAction = "Up"
+                    self.actionAfterNoOpCycleEnds = "Up"
+                    self.y = self.y + 1
+                    self.coordAt = (self.x, self.y)
+                    return 'Up'
+            elif self.noOpCount == 5 and self.noOpAction == True and self.actionAfterNoOpCycleEnds == "Up":
+                self.spinCycle = self.spinCycle + 1
+                if self.spinCycle % 4 == 0 and self.spinCycle > 0:
+                    self.spinCycle = self.spinCycle - 4
+                    return 'Right'
+                else:
+                    self.noOpCount = 0
+                    self.spinCycle = self.spinCycle + 1
+                    self.noOpAction = False
+                    self.lastAction = "Right"
+                    self.actionAfterNoOpCycleEnds = "Right"
+                    self.x = self.x + 1
+                    self.coordAt = (self.x, self.y)
+                    return 'Right'
+            elif self.noOpCount == 5 and self.noOpAction == True and self.actionAfterNoOpCycleEnds == "Right":
+                self.spinCycle = self.spinCycle + 1
+                if self.spinCycle % 4 == 0 and self.spinCycle > 0:
+                    self.spinCycle = self.spinCycle - 4
+                    return 'Down'
+                else:
+                    self.noOpCount = 0
+                    self.spinCycle = self.spinCycle + 1
+                    self.noOpAction = False
+                    self.lastAction = "Down"
+                    self.actionAfterNoOpCycleEnds = "Down"
+                    self.y = self.y - 1
+                    self.coordAt = (self.x, self.y)
+                    return 'Down'
+            elif self.noOpCount == 5 and self.noOpAction == True and self.actionAfterNoOpCycleEnds == "Down":
+                self.spinCycle = self.spinCycle + 1
+                if self.spinCycle % 4 == 0 and self.spinCycle > 0:
+                    self.spinCycle = self.spinCycle - 4
+                    return 'Left'
+                else:
+                    self.noOpCount = 0
+                    self.spinCycle = self.spinCycle + 1
+                    self.noOpAction = False
+                    self.lastAction = "Left"
+                    self.actionAfterNoOpCycleEnds = "Left"
+                    self.x = self.x - 1
+                    self.coordAt = (self.x, self.y)
+                    return 'Left'
+            elif percept[1] == 'None' and self.lastAction == "" :
                 self.lastAction = "Up"
                 self.y = self.y + 1
                 self.coordAt = (self.x, self.y)
                 self.coordsVisited.append(self.coordAt)
+                #print(self.coordsVisited)
                 return 'Up'
             elif percept[1] == 'None' and self.lastAction == "Up":
                 self.lastAction = "Up"
                 self.y = self.y + 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Right"
+                        self.y = self.y - 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Up'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Up'
             elif percept[1] == 'Bump' and self.lastAction == "Up":
                 self.lastAction = "Right"
                 self.x = self.x + 1
+                self.y = self.y - 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Right"
+                        self.x = self.x - 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Right'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Right'
             elif percept[1] == 'None' and self.lastAction == "Right":
                 self.lastAction = "Right"
                 self.x = self.x + 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Down"
+                        self.x = self.x - 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Right'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Right'
             elif percept[1] == 'Bump' and self.lastAction == "Right":
                 self.lastAction = "Down"
                 self.y = self.y - 1
+                self.x = self.x - 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Down"
+                        self.y = self.y + 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Down'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Down'
             elif percept[1] == 'None' and self.lastAction == "Down":
                 self.lastAction = "Down"
                 self.y = self.y - 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Left"
+                        self.y = self.y + 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Down'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Down'
             elif percept[1] == 'Bump' and self.lastAction == "Down":
                 self.lastAction = "Left"
                 self.x = self.x - 1
+                self.y = self.y + 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Left"
+                        self.x = self.x + 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Left'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Left'
             elif percept[1] == 'None' and self.lastAction == "Left":
                 self.lastAction = "Left"
                 self.x = self.x - 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Up"
+                        self.x = self.x + 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Left'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Left'
             elif percept[1] == 'Bump' and self.lastAction == "Left":
                 self.lastAction = "Up"
                 self.y = self.y + 1
+                self.x = self.x + 1
                 self.coordAt = (self.x, self.y)
+                found = False
                 for coord in self.coordsVisited:
                     if coord == self.coordAt:
+                        found = True
                         self.lastAction = "Up"
+                        self.y = self.y - 1
+                        self.coordAt = (self.x, self.y)
+                        self.noOpCount = self.noOpCount + 1
+                        self.noOpAction = True
                         return 'NoOp'
-                    else:
-                        self.coordsVisited.append(self.coordAt)
-                        return 'Up'
+                        break
+                if found == False:
+                    self.noOpAction = False
+                    self.coordsVisited.append(self.coordAt)
+                    #print(self.coordsVisited)
+                    return 'Up'
             
 class VacuumEnvironment(XYEnvironment):
 
