@@ -30,8 +30,6 @@ class CfultonVacuumAgent(VacuumAgent):
         if (percept[0] == 'Dirty'):
             return 'Suck'
         else:
-            #x = x + 1
-            #coordsVisited.add(x, y)
             if percept[1] == 'None' and self.lastAction == "" :
                 self.lastAction = "Up"
                 self.y = self.y + 1
@@ -42,50 +40,90 @@ class CfultonVacuumAgent(VacuumAgent):
                 self.lastAction = "Up"
                 self.y = self.y + 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Up'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Right"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Up'
             elif percept[1] == 'Bump' and self.lastAction == "Up":
                 self.lastAction = "Right"
                 self.x = self.x + 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Right'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Right"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Right'
             elif percept[1] == 'None' and self.lastAction == "Right":
                 self.lastAction = "Right"
                 self.x = self.x + 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Right'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Down"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Right'
             elif percept[1] == 'Bump' and self.lastAction == "Right":
                 self.lastAction = "Down"
                 self.y = self.y - 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Down'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Down"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Down'
             elif percept[1] == 'None' and self.lastAction == "Down":
                 self.lastAction = "Down"
                 self.y = self.y - 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Down'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Left"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Down'
             elif percept[1] == 'Bump' and self.lastAction == "Down":
                 self.lastAction = "Left"
                 self.x = self.x - 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Left'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Left"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Left'
             elif percept[1] == 'None' and self.lastAction == "Left":
                 self.lastAction = "Left"
                 self.x = self.x - 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Left'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Up"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Left'
             elif percept[1] == 'Bump' and self.lastAction == "Left":
                 self.lastAction = "Up"
                 self.y = self.y + 1
                 self.coordAt = (self.x, self.y)
-                self.coordsVisited.append(self.coordAt)
-                return 'Up'
+                for coord in self.coordsVisited:
+                    if coord == self.coordAt:
+                        self.lastAction = "Up"
+                        return 'NoOp'
+                    else:
+                        self.coordsVisited.append(self.coordAt)
+                        return 'Up'
             
 class VacuumEnvironment(XYEnvironment):
 
