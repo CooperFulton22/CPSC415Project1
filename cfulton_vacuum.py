@@ -19,25 +19,20 @@ class CfultonVacuumAgent(VacuumAgent):
     def __init__(self):
         super().__init__()
         self._bump = False
-        coordsVisited = {};
+        coordsVisited = []
         #x and y both start at 0, (0,0) being the starting point
-        x = 0;
-        y = 0;
-        coordStart = (x, y);
-        coordsVisted.add(coordStart);
+        x = 0
+        y = 0
+        coordStart = (x, y)
+        coordsVisited.append(coordStart)
     def program(self, percept):
-        if (self._status == 'Dirty') {
-            return 'Suck';
-        }
-        else {
-            if (self._bump == 'Bump'){
-                return 'Up';
-            }
-        }
+        if (percept[0] == 'Dirty'):
+            return 'Suck'
+        else:
+            x = x + 1
+            coordsVisited.add(x, y)
+            return 'Right'
             
-
-
-
 class VacuumEnvironment(XYEnvironment):
 
     """The environment of [Ex. 2.12]. Agent perceives dirty or clean, and bump
