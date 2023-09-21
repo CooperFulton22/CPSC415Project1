@@ -24,56 +24,59 @@ def find_path(atlas, alg):
     # THIS IS WHERE YOUR AMAZING CODE GOES
     #Amazing code!
     # Here's a (bogus) example return value:
+
+    #initialize variables
     totalCost = 0
     pathList = [0]
-    checkDistanceList = []
-    checkRoadList = []
+    queueStack = []
+    nodesExpanded = [0]
     numCities = atlas.get_num_cities()
     cityCheckingWith = 0
     cityIncrement = 0
-    shortestRoad = 0
-    cityToAdd = 0
+    addedDistance = 0
+    #for Dijkstras
     if alg == "Dijkstras":
         findingGoalState = True
+        #all occurs while finding goal state (numcities - 1)
         while findingGoalState == True:
+            #adding cities with distances to list and distances respectively
             while cityIncrement < numCities:
+                #print(atlas.get_road_dist(cityCheckingWith, cityIncrement))
+                #print("\n")
                 if (atlas.get_road_dist(cityCheckingWith, cityIncrement) != math.inf and atlas.get_road_dist(cityCheckingWith, cityIncrement) != 0):
-                    checkDistanceList.append(atlas.get_road_dist(cityCheckingWith, cityIncrement))
-                    shortestRoad = atlas.get_road_dist(cityCheckingWith, cityIncrement)
-                    checkRoadList.append(cityIncrement);
-                    cityIncrement = cityIncrement + 1
+                    if cityIncrement not in queueStack and cityIncrement not in nodesExpanded:
+                        tup = (atlas.get_road_dist(cityCheckingWith, cityIncrement) + addedDistance, cityIncrement)
+                        queueStack.append(tup)
+                        cityIncrement = cityIncrement + 1
+                    else:
+                        cityIncrement = cityIncrement + 1
                 else:
                     cityIncrement = cityIncrement + 1
-            spotInDistanceList = 0
-            for road in checkDistanceList:
-                if road < shortestRoad:
-                    shortestRoad = road
+            #order queueToStack to put shortest g(n) in front and then order them
+            queueStack.sort(key=lambda a: a[0])
+            #print(queueStack)
+            cityCheckingWith = queueStack[0][-1]
+            #print(cityCheckingWith)
+            addedDistance = queueStack[0][0]
+            tup2 = (cityCheckingWith, addedDistance)
+            nodesExpanded.append(tup2)
+            print(nodesExpanded)
+            queueStack.pop(0)
             
-            #finding spot in list for city to add
-            goThroughList = True
-            while goThroughList == True:
-                if checkDistanceList[spotInDistanceList] == shortestRoad:
-                    cityToAdd = checkRoadList[spotInDistanceList]
-                    goThroughList = False
-                elif spotInDistanceList == len(checkRoadList):
-                    goThroughList = False
-                else:
-                    spotInDistanceList = spotInDistanceList + 1
-
+            '''
             #add to total cost and add to final list to be returned
             totalCost = totalCost + shortestRoad
             pathList.append(cityToAdd)
-            cityCheckingWith = cityToAdd
-            checkDistanceList.clear()
-            checkRoadList.clear()
+            print(cityToAdd)
+            '''
+            #reinitialize variables for next go around
             cityIncrement = 0
-            shortestRoad = 0
-            
-            #if goal state is found, end
-            if cityToAdd == numCities - 1:
+            if (cityCheckingWith == numCities - 1):
                 findingGoalState = False
-            else:
-                cityToAdd = 0
+                totalCost = addedDistance
+                 
+            #if goal state is found, end
+             
     return (pathList, totalCost)
 
 
