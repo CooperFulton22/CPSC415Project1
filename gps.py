@@ -8,6 +8,7 @@ Cooper Fulton, University of Mary Washington, fall 2023
 from atlas import Atlas
 import numpy as np
 import sys
+import math
 
 
 def find_path(atlas, alg):
@@ -23,7 +24,7 @@ def find_path(atlas, alg):
     # THIS IS WHERE YOUR AMAZING CODE GOES
     #Amazing code!
     # Here's a (bogus) example return value:
-    totalcost = 0
+    totalCost = 0
     pathList = [0]
     checkDistanceList = []
     checkRoadList = []
@@ -35,12 +36,10 @@ def find_path(atlas, alg):
     if alg == "Dijkstras":
         findingGoalState = True
         while findingGoalState == True:
-            num = get_road_dist(0,1)
-            print(num)
             while cityIncrement < numCities:
-                if (get_road_dist(cityCheckingWith, cityIncrement) != math.inf and get_road_dist(cityCheckingWith, cityIncrement) != 0):
-                    checkDistanceList.append(get_road_dist(cityCheckingWith, cityIncrement))
-                    shortestRoad = get_road_dist(cityCheckingWith, cityIncrement)
+                if (atlas.get_road_dist(cityCheckingWith, cityIncrement) != math.inf and atlas.get_road_dist(cityCheckingWith, cityIncrement) != 0):
+                    checkDistanceList.append(atlas.get_road_dist(cityCheckingWith, cityIncrement))
+                    shortestRoad = atlas.get_road_dist(cityCheckingWith, cityIncrement)
                     checkRoadList.append(cityIncrement);
                     cityIncrement = cityIncrement + 1
                 else:
@@ -56,17 +55,25 @@ def find_path(atlas, alg):
                 if checkDistanceList[spotInDistanceList] == shortestRoad:
                     cityToAdd = checkRoadList[spotInDistanceList]
                     goThroughList = False
+                elif spotInDistanceList == len(checkRoadList):
+                    goThroughList = False
                 else:
                     spotInDistanceList = spotInDistanceList + 1
 
             #add to total cost and add to final list to be returned
             totalCost = totalCost + shortestRoad
             pathList.append(cityToAdd)
+            cityCheckingWith = cityToAdd
+            checkDistanceList.clear()
+            checkRoadList.clear()
+            cityIncrement = 0
+            shortestRoad = 0
             
             #if goal state is found, end
             if cityToAdd == numCities - 1:
                 findingGoalState = False
-                
+            else:
+                cityToAdd = 0
     return (pathList, totalCost)
 
 
