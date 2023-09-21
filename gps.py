@@ -23,7 +23,51 @@ def find_path(atlas, alg):
     # THIS IS WHERE YOUR AMAZING CODE GOES
     #Amazing code!
     # Here's a (bogus) example return value:
-    return ([0,3,2,4],970)
+    totalcost = 0
+    pathList = [0]
+    checkDistanceList = []
+    checkRoadList = []
+    numCities = atlas.get_num_cities()
+    cityCheckingWith = 0
+    cityIncrement = 0
+    shortestRoad = 0
+    cityToAdd = 0
+    if alg == "Dijkstras":
+        findingGoalState = True
+        while findingGoalState == True:
+            num = get_road_dist(0,1)
+            print(num)
+            while cityIncrement < numCities:
+                if (get_road_dist(cityCheckingWith, cityIncrement) != math.inf and get_road_dist(cityCheckingWith, cityIncrement) != 0):
+                    checkDistanceList.append(get_road_dist(cityCheckingWith, cityIncrement))
+                    shortestRoad = get_road_dist(cityCheckingWith, cityIncrement)
+                    checkRoadList.append(cityIncrement);
+                    cityIncrement = cityIncrement + 1
+                else:
+                    cityIncrement = cityIncrement + 1
+            spotInDistanceList = 0
+            for road in checkDistanceList:
+                if road < shortestRoad:
+                    shortestRoad = road
+            
+            #finding spot in list for city to add
+            goThroughList = True
+            while goThroughList == True:
+                if checkDistanceList[spotInDistanceList] == shortestRoad:
+                    cityToAdd = checkRoadList[spotInDistanceList]
+                    goThroughList = False
+                else:
+                    spotInDistanceList = spotInDistanceList + 1
+
+            #add to total cost and add to final list to be returned
+            totalCost = totalCost + shortestRoad
+            pathList.append(cityToAdd)
+            
+            #if goal state is found, end
+            if cityToAdd == numCities - 1:
+                findingGoalState = False
+                
+    return (pathList, totalCost)
 
 
 
