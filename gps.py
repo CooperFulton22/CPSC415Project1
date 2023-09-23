@@ -34,6 +34,7 @@ def find_path(atlas, alg):
     cityCheckingWith = 0
     cityIncrement = 0
     addedDistance = 0
+    dictOfPaths = {0: [0]}
     #for Dijkstras
     if alg == "Dijkstras":
         findingGoalState = True
@@ -54,14 +55,23 @@ def find_path(atlas, alg):
                     cityIncrement = cityIncrement + 1
             #order queueToStack to put shortest g(n) in front and then order them
             queueStack.sort(key=lambda a: a[0])
-            #print(queueStack)
+            print(queueStack)
+            if dictOfPaths.get(cityCheckingWith) == [cityCheckingWith]:
+                dictOfPaths[queueStack[0][-1]] = dictOfPaths.get(cityCheckingWith)
+                print(dictOfPaths)
+                #print(dictOfPaths.get(queueStack[0][-1]), "is here")
+                #print(queueStack[0][-1])
+                dictOfPaths.get(queueStack[0][-1]).append(queueStack[0][-1])
+                print(dictOfPaths)
+            #print(dictOfPaths)
             cityCheckingWith = queueStack[0][-1]
-            #print(cityCheckingWith)
+            #print("City check is ", cityCheckingWith)
             addedDistance = queueStack[0][0]
             tup2 = (cityCheckingWith, addedDistance)
             nodesExpanded.append(tup2)
-            print(nodesExpanded)
+            #print("Nodes expanded ", nodesExpanded)
             queueStack.pop(0)
+
             
             '''
             #add to total cost and add to final list to be returned
