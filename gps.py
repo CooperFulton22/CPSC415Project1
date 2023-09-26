@@ -36,7 +36,6 @@ def find_path(atlas, alg):
     addedDistance = 0
     dictOfPaths = {0: [0]}
     path = [0]
-    print(dictOfPaths)
     #for Dijkstras
     if alg == "Dijkstras":
         findingGoalState = True
@@ -44,8 +43,6 @@ def find_path(atlas, alg):
         while findingGoalState == True:
             #adding cities with distances to list and distances respectively
             while cityIncrement < numCities:
-                #print(atlas.get_road_dist(cityCheckingWith, cityIncrement))
-                #print("\n")
                 ifNodeVisitAlready = False
                 if (atlas.get_road_dist(cityCheckingWith, cityIncrement) != math.inf and atlas.get_road_dist(cityCheckingWith, cityIncrement) != 0):
                     if cityIncrement not in queueStack and cityIncrement not in nodesExpanded:
@@ -54,44 +51,15 @@ def find_path(atlas, alg):
                         for x in path:
                             pathToBeAdded.append(x)
                         pathToBeAdded.append(cityIncrement)
-                        #print(path, "with added")
                         tup = (distance, pathToBeAdded, cityIncrement)
                         queueStack.append(tup)
                         queueStack.sort(key=lambda a: a[0])
-                        #print(path, "with removed")
-                        '''
-                        #print(queueStack, "is stack at moment")
-                        arrayToAdd = []
-                        print(cityCheckingWith, " is city check")
-                        for x in dictOfPaths.get(cityCheckingWith):
-                            arrayToAdd.append(x)
-                        arrayToAdd.append(cityIncrement)
-                        doNotAdd = False
-                        if dictOfPaths.get(cityIncrement) != None:
-                            for x in dictOfPaths.get(cityIncrement):
-                                if x == cityIncrement:
-                                    doNotAdd = True
-                                    print("Will not be added")
-                        if doNotAdd == False:
-                            print(arrayToAdd, " is to be added")
-                            temp = cityIncrement
-                            dictOfPaths[temp] = arrayToAdd
-                        myKeys = list(dictOfPaths.keys())
-                        myKeys.sort()
-                        sortedDict = {i: dictOfPaths[i] for i in myKeys}
-                        print(sortedDict)
-                        '''
                         cityIncrement = cityIncrement + 1
                     else:
                         cityIncrement = cityIncrement + 1
                 else:
                     cityIncrement = cityIncrement + 1
-            #order queueToStack to put shortest g(n) in front and then order them
-            
-            #print(queueStack)
-    
             cityCheckingWith = queueStack[0][-1]
-            #print("City check is ", cityCheckingWith)
             addedDistance = queueStack[0][0]
             #tupToNodes = (cityCheckingWith, addedDistance)
             checkForNode = False
@@ -101,23 +69,21 @@ def find_path(atlas, alg):
                     checkForNode = True
             if checkForNode == False:
                 nodesExpanded.append(cityCheckingWith)
-            #print("Nodes expanded ", nodesExpanded)
-            
             queueStack.pop(0)
-
-
             #reinitialize variables for next go around
             cityIncrement = 0
             if (cityCheckingWith == numCities - 1):
                 findingGoalState = False
                 totalCost = addedDistance
                 pathList = path
-                print("nodes expanded: ", len(nodesExpanded))
                  
-            #if goal state is found, end
     
-    if (alg == "Greedy"):
-        return ("Unimplemented")
+    if (alg == "greedy"):
+        pathList = "Unimplemented"
+    if (alg == "A*"):
+        pathList = "Unimplemented"
+                 
+
 
     return (pathList, totalCost)
 
