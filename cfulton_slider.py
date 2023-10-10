@@ -6,6 +6,7 @@ Cooper Fulton, University of Mary Washington, fall 2023
 '''
 
 from puzzle import Puzzle
+from copy import deepcopy
 import numpy as np
 import sys
 
@@ -13,12 +14,11 @@ def h1(puzzle):
     tilesNotRight = 0
     count = 1
     for x in puzzle.grid:
-        print(x)
         for y in x:
-            if y == count:
+            if y != count:
                 tilesNotRight = tilesNotRight + 1
             count = count + 1
-    print(tilesNotRight)
+    print(tilesNotRight, " is here")
     return tilesNotRight
     
 
@@ -27,7 +27,16 @@ def solve(p):
     Puzzle object passed. Returns that sequence in a list.
     '''
     # THIS IS WHERE YOUR AMAZING CODE GOES
-    h1(p)
+    puzzleSolved = False
+    frontier = ()
+    frontierEstimates = {(), 0}
+    frontierPuzzles = {(), ("deepcopy(p)")}
+    while puzzleSolved == False:
+        if (h1(p) == 0):
+            puzzleSolved = True
+    
+
+
     # Here's a (bogus) example return value:
     return ["D", "U", "L", "L"]
 
