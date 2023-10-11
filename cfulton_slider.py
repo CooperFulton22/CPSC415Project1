@@ -23,15 +23,20 @@ def h1(puzzle):
 
 def insert_into_frontier(frontier, frontierEstimates, sequence, cost):
     spotFound = False
+    count = 0
     for x in frontier:
         print("here")
         print(x)
         if frontierEstimates[x] > cost:
-            frontier.insert(sequence)
+            frontier.insert(count, sequence)
+            print("inserted")
             spotFound = True
-
+            return frontier
+        count = count + 1
     if spotFound == False:
         frontier.append(sequence)
+        print("appended")
+        spotFound = True
 
     return frontier
 
@@ -45,7 +50,7 @@ def solve(p):
     frontierPuzzles = {(): deepcopy(p)}
     puzzleSolved = False
     count = 0
-    while count < 11:
+    while puzzleSolved == False:
         poppedFrontier = frontier[0]
         frontier.pop(0)
         legalMovesAtState = frontierPuzzles[poppedFrontier].legal_moves()
@@ -82,13 +87,13 @@ def solve(p):
                 frontier = insert_into_frontier(frontier, frontierEstimates, newFrontier, estToAdd)
                 print(frontier) 
         count = count + 1
-        if (h1ToAdd == 0):
+        if (copyOfMove.is_solved() == True):
             puzzleSolved = True
     
 
 
     # Here's a (bogus) example return value:
-    return poppedFrontier
+    return newFrontier
 
 
 
