@@ -18,27 +18,77 @@ def h1(puzzle):
             if y != count:
                 tilesNotRight = tilesNotRight + 1
             count = count + 1
-    print(tilesNotRight, " is here")
+    #print(tilesNotRight, " is here")
     return tilesNotRight
-    
+
+def insert_into_frontier(frontier, frontierEstimates, sequence, cost):
+    spotFound = False
+    for x in frontier:
+        print("here")
+        print(x)
+        if frontierEstimates[x] > cost:
+            frontier.insert(sequence)
+            spotFound = True
+
+    if spotFound == False:
+        frontier.append(sequence)
+
+    return frontier
 
 def solve(p):
     '''Finds a sequence of moves ("L", "U", "R", or "D") that will solve the
     Puzzle object passed. Returns that sequence in a list.
     '''
     # THIS IS WHERE YOUR AMAZING CODE GOES
+    frontier = [()]
+    frontierEstimates = {(): 0}
+    frontierPuzzles = {(): deepcopy(p)}
     puzzleSolved = False
-    frontier = ()
-    frontierEstimates = {(), 0}
-    frontierPuzzles = {(), ("deepcopy(p)")}
-    while puzzleSolved == False:
-        if (h1(p) == 0):
+    count = 0
+    while count < 11:
+        poppedFrontier = frontier[0]
+        frontier.pop(0)
+        legalMovesAtState = frontierPuzzles[poppedFrontier].legal_moves()
+        print(legalMovesAtState)
+        for x in legalMovesAtState:
+            moveToAdd = x
+            newFrontier = poppedFrontier + (moveToAdd,)
+            print("newFrontier is", newFrontier)
+            print("moveToAdd is", moveToAdd)
+            estToAdd = h1(frontierPuzzles[poppedFrontier])
+            print("estToAdd is", estToAdd)
+            puzzlePulled = frontierPuzzles[poppedFrontier]
+            print("puzzlePulled is\n", puzzlePulled)
+            if puzzlePulled.is_solved() == True:
+                sequenceReturn = poppedFrontier
+            copyOfMove = deepcopy(puzzlePulled)
+            copyOfMove.move(moveToAdd)
+            print("copyOfMove is", copyOfMove)
+            h1ToAdd = h1(copyOfMove)
+            estToAdd = h1ToAdd
+            alreadyInPuzzles = False
+            for y in frontierPuzzles.values():
+                print("y is", y)
+                print("copyOfMove now is\n", copyOfMove)
+                if y == copyOfMove:
+                    alreadyInPuzzles = True
+            if alreadyInPuzzles == False:
+                print("insert being called")
+                frontierPuzzles[newFrontier] = copyOfMove
+                print("frontierPuzzles is now", frontierPuzzles)
+                frontierEstimates[newFrontier] = estToAdd
+                print("frontierEstimates is now", frontierEstimates)
+                print("frontier before call is", frontier)
+                frontier = insert_into_frontier(frontier, frontierEstimates, newFrontier, estToAdd)
+                print(frontier) 
+        count = count + 1
+        if (h1ToAdd == 0):
             puzzleSolved = True
     
 
 
     # Here's a (bogus) example return value:
-    return ["D", "U", "L", "L"]
+    return poppedFrontier
 
 
 
