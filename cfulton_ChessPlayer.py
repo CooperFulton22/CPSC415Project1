@@ -1,5 +1,6 @@
 from chess_player import ChessPlayer
 import random
+from copy import deepcopy
 
 class cfulton_ChessPlayer(ChessPlayer):
     def __init__(self, board, color):
@@ -16,41 +17,38 @@ class cfulton_ChessPlayer(ChessPlayer):
             oppColor = 'white'
 
         #First, get all the pieces that can move
+        
         for x in self.board.get_all_available_legal_moves(self.color):
+            boardNow = deepcopy(self.board)
             originalSpot = x[0]
             print(originalSpot)
             possibleSpotToMove = x[1]
             print(possibleSpotToMove)
+            possibleMove = boardNow.make_move(originalSpot, possibleSpotToMove)
+            possibleBoard = deepcopy(boardNow)
             if originalSpot not in myMovesDict:
                 myMovesDict[originalSpot] = []
-                myMovesDict[originalSpot].append(possibleSpotToMove)
+                myMovesDict[originalSpot].append(possibleBoard)
+                print("board added")
             else:
-                myMovesDict[originalSpot].append(possibleSpotToMove)
+                myMovesDict[originalSpot].append(possibleBoard)
+                print("board added again")
         print("my moves ",  myMovesDict)
 
         for x in self.board.get_all_available_legal_moves(oppColor):
+            boardNow = deepcopy(self.board)
             oppOriginalSpot = x[0]
             oppPossibleSpotToMove = x[1]
+            possibleMove = boardNow.make_move(oppOriginalSpot, oppPossibleSpotToMove)
+            possibleBoard = deepcopy(boardNow)
             if oppOriginalSpot not in oppMovesDict:
                 oppMovesDict[oppOriginalSpot] = []
-                oppMovesDict[oppOriginalSpot].append(oppPossibleSpotToMove)
+                oppMovesDict[oppOriginalSpot].append(possibleBoard)
             else:
-                oppMovesDict[oppOriginalSpot].append(oppPossibleSpotToMove)
+                oppMovesDict[oppOriginalSpot].append(possibleBoard)
         print("oppenent moves ", oppMovesDict)
 
         #next we are going to get rid of all possible moves from my dictionary that can get me killed
-        for x in myMovesDict:
-            #print("x is ", x)
-            for y in myMovesDict[x]:
-                #print("y is ", y)
-                for z in oppMovesDict:
-                    #print("z is ", z)
-                    for w in oppMovesDict[z]:
-                        #print("w is ", w)
-                        if y == w:
-                            #print("time for removal")
-                            myMovesDict[x].remove(y)
-        print("my moves ", myMovesDict)
-        #print(self.board.get_all_available_legal_moves(self.color))
+
 
         return random.choice(self.board.get_all_available_legal_moves(self.color))
